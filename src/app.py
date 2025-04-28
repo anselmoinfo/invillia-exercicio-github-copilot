@@ -121,7 +121,17 @@ def root():
 
 @app.get("/activities")
 def get_activities():
-    return activities
+    """Retrieve all activities with participant details"""
+    return [
+        {
+            "name": activity_name,
+            "description": activity["description"],
+            "schedule": activity["schedule"],
+            "max_participants": activity["max_participants"],
+            "participants": activity["participants"]
+        }
+        for activity_name, activity in activities.items()
+    ]
 
 
 @app.post("/activities/{activity_name}/signup")
@@ -134,9 +144,9 @@ def signup_for_activity(activity_name: str, email: str):
     # Get the specificy activity
     activity = activities[activity_name]
 
-    # Validar se o aluno já está inscrito
-    if email in activity["participants"]:
-        raise HTTPException(status_code=400, detail="Student is already signed up for this activity")
+    # # Validar se o aluno já está inscrito
+    # if email in activity["participants"]:
+    #     raise HTTPException(status_code=400, detail="Student is already signed up for this activity")
 
     # Validar se o aluno já está inscrito em outra atividade
     for act in activities.values():
